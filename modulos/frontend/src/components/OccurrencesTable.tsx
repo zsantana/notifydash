@@ -30,7 +30,7 @@ export function OccurrencesTable({ occurrences }: OccurrencesTableProps) {
               <TableCell>{occurrence.origin}</TableCell>
               <TableCell>{occurrence.platform}</TableCell>
               <TableCell className="text-right">
-                ${occurrence.unitValue.toFixed(2)}
+                ${occurrence.unitValue}
               </TableCell>
               <TableCell>
                 {new Date(occurrence.receivedAt).toLocaleString()}

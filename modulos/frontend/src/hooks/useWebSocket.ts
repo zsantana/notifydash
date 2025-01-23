@@ -37,13 +37,13 @@ export function useWebSocket(url: string) {
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data) as Occurrence;
-          setOccurrences((prev) => [data, ...prev].slice(0, 100)); // Keep last 100 occurrences
+          setOccurrences((prev) => [data, ...prev].slice(0, 20)); // Keep last 100 occurrences
         } catch (error) {
           console.error('Error parsing message:', error);
         }
       };
 
-      setSocket(ws);
+      // setSocket(ws);
 
       return () => {
         ws.close();
