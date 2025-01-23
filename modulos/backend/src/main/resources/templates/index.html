@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Kafka WebSocket Demo</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #343a40; /* Fundo escuro */
+            color: #f8f9fa; /* Cor do texto clara */
+            padding-top: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin: 20px;
+            padding: 20px;
+            background-color: #495057; /* Cor de fundo escura para os cards */
+            text-align: center;
+        }
+
+        .card-header {
+            background-color: #6c757d; /* Cor escura para o cabeçalho */
+            color: white;
+            font-size: 1.2em;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .card-body {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #f8f9fa; /* Cor de texto clara */
+        }
+
+        .badge {
+            font-size: 2em;
+            padding: 12px 20px;
+            border-radius: 50%;
+            margin-top: 15px;
+        }
+
+        .badge-primary {
+            background-color: #007bff; /* Cor azul para Webhook */
+        }
+
+        .badge-success {
+            background-color: #28a745; /* Verde para Email */
+        }
+
+        .badge-warning {
+            background-color: #ffc107; /* Amarelo para WhatsApp */
+        }
+
+        .badge-info {
+            background-color: #17a2b8; /* Azul claro para Telegram */
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .col-md-3 {
+            margin-bottom: 20px;
+        }
+
+        .badge-text {
+            font-size: 1.5em; /* Ajusta o texto do contador */
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Kafka WebSocket Dashboard</a>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-plug"></i> Webhook
+                    </div>
+                    <div class="card-body">
+                        <span id="webhook-badge" class="badge badge-primary badge-text">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-envelope"></i> Email
+                    </div>
+                    <div class="card-body">
+                        <span id="email-badge" class="badge badge-success badge-text">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-whatsapp"></i> WhatsApp
+                    </div>
+                    <div class="card-body">
+                        <span id="whatsapp-badge" class="badge badge-warning badge-text">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-paper-plane"></i> Telegram
+                    </div>
+                    <div class="card-body">
+                        <span id="telegram-badge" class="badge badge-info badge-text">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Inicializando as variáveis de contagem
+            let webhookCount = 0;
+            let emailCount = 0;
+            let whatsappCount = 0;
+            let telegramCount = 0;
+
+            // Selecionando os elementos de contagem
+            let webhookBadge = document.getElementById("webhook-badge");
+            let emailBadge = document.getElementById("email-badge");
+            let whatsappBadge = document.getElementById("whatsapp-badge");
+            let telegramBadge = document.getElementById("telegram-badge");
+
+            // Função para atualizar os badges
+            function updateBadge(badgeElement, count) {
+                badgeElement.innerText = count;
+            }
+
+            // Conectando aos WebSockets
+            let webhookSocket = new WebSocket("ws://localhost:8030/ws");
+            let emailSocket = new WebSocket("ws://localhost:8040/ws");
+            let whatsappSocket = new WebSocket("ws://localhost:8050/ws");
+            let telegramSocket = new WebSocket("ws://localhost:8060/ws");
+
+            // Webhook
+            webhookSocket.onmessage = function () {
+                webhookCount++;
+                updateBadge(webhookBadge, webhookCount);
+            };
+
+            // Email
+            emailSocket.onmessage = function () {
+                emailCount++;
+                updateBadge(emailBadge, emailCount);
+            };
+
+            // WhatsApp
+            whatsappSocket.onmessage = function () {
+                whatsappCount++;
+                updateBadge(whatsappBadge, whatsappCount);
+            };
+
+            // Telegram
+            telegramSocket.onmessage = function () {
+                telegramCount++;
+                updateBadge(telegramBadge, telegramCount);
+            };
+        });
+    </script>
+</body>
+</html>
